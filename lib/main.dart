@@ -1,4 +1,3 @@
-import 'dart:io';                            // Add this import.
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -18,24 +17,43 @@ class WebViewApp extends StatefulWidget {
 }
 
 class _WebViewAppState extends State<WebViewApp> {
-  // Add from here ...
+  WebViewController? _controller;
+
   @override
   void initState() {
-    if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
-    }
     super.initState();
   }
-  // ... to here.
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter WebView'),
+        title: const Text('WebView'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              _controller?.reload();
+            },
+            icon: const Icon(Icons.refresh),
+          ),
+          IconButton(
+            onPressed: () {
+              _controller?.clearCache();
+            },
+            icon: const Icon(Icons.delete),
+          ),
+        ],
       ),
-      body: const WebView(
-        initialUrl: 'http://45.88.223.165:8069/',
+      body: SafeArea(
+        child: WebView(
+          key: UniqueKey(),
+          onWebViewCreated: (controller) {
+            _controller = controller;
+          },
+          debuggingEnabled: true,
+          initialUrl: 'http://45.88.223.165:8069/',
+          javascriptMode: JavascriptMode.unrestricted,
+        ),
       ),
     );
   }
